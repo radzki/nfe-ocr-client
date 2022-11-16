@@ -5,10 +5,10 @@ name = "pypi"
 
 [packages]
 requests = "*"
-pdf2image = "*"
-python-poppler = "*"
 
 [dev-packages]
+pdf2image = "*"
+python-poppler = "*"
 
 [requires]
 python_version = "3.10"

@@ -1,6 +1,6 @@
 import pathlib
 import requests
-from pdf2image import convert_from_bytes
+#from pdf2image import convert_from_bytes
 import os
 from io import BytesIO
 from multiprocessing.pool import ThreadPool
@@ -23,14 +23,14 @@ class OCRClient:
         self.total_count = 0
         self.finished = False
 
-    def pdf_to_image(self, file) -> BytesIO:
-        print(f"Converting {file} to image...")
-        with open(EXAMPLE_DIR / pathlib.Path(file), 'rb') as f:
-            pages = convert_from_bytes(f.read())
-            buf = BytesIO()
-            pages[0].save(buf, format="png")
-            buf.seek(0)
-        return buf
+    #def pdf_to_image(self, file) -> BytesIO:
+    #    print(f"Converting {file} to image...")
+    #    with open(EXAMPLE_DIR / pathlib.Path(file), 'rb') as f:
+    #        pages = convert_from_bytes(f.read())
+    #        buf = BytesIO()
+    #        pages[0].save(buf, format="png")
+    #        buf.seek(0)
+    #    return buf
 
     def make_request(self, image: BytesIO):
         files = {
@@ -44,11 +44,12 @@ class OCRClient:
         from time import sleep
         self.sent_count += 1
         print(f"Sending file {file}")
-        image: BytesIO = self.pdf_to_image(file)
-        try:
-            self.make_request(image)
-        except Exception:
-            pass
+        with open(self.root_folder / pathlib.Path(file), 'rb') as f:
+            image: BytesIO = BytesIO(f.read())
+            try:
+                self.make_request(image)
+            except Exception:
+                pass
 
         if self.total_count == self.sent_count:
             self.finished = True
