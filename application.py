@@ -123,8 +123,6 @@ class Application:
     def run_ocr(self):
         self.ocr_client.run()
         while not self.ocr_client.finished:
-            print(self.ocr_client.sent_count)
-            print(self.ocr_client.total_count)
             progr = (self.ocr_client.sent_count*100)/self.ocr_client.total_count
             self.progress_count.set(progr)
             self.progress_message_lbl["text"] = f"{self.ocr_client.sent_count} de {self.ocr_client.total_count}"

@@ -87,7 +87,7 @@ class OCRClient:
         return pathlib.Path(target)
 
     def file_iterator(self, file):
-
+        print(f"Enviadas: {self.sent_count}/{self.total_count}")
         self.sent_count += 1
         print(f"Sending file {file}")
         filepath = self.root_folder / pathlib.Path(file)
@@ -104,10 +104,8 @@ class OCRClient:
 
                 if target is None:
                     self.move_file(filename=pathlib.Path(file), target=MANUAL_DIR, rename=f"NF {numero_nf}.pdf")
-
                 else:
-                    self.move_file(filename=pathlib.Path(file), target=target,
-                               rename=f"NF {numero_nf}.pdf")
+                    self.move_file(filename=pathlib.Path(file), target=target, rename=f"NF {numero_nf}.pdf")
 
         if self.total_count == self.sent_count:
             self.finished = True
