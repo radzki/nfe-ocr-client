@@ -109,6 +109,7 @@ class OCRClient:
                     self.move_file(filename=pathlib.Path(file), target=target, rename=f"NF {numero_nf}.pdf")
 
         if self.total_count == self.sent_count:
+            logger.info("########## Finished execution!! ##########")
             self.finished = True
 
     def __create_dirs(self):
@@ -125,7 +126,12 @@ class OCRClient:
                 raise
 
     def run(self):
+        self.sent_count = 0
+        self.total_count = 0
+        self.finished = False
+
         self.__create_dirs()
+
         files = []
         for f in os.listdir(self.root_folder):
             if str(f).endswith("pdf"):
