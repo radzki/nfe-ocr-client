@@ -49,15 +49,17 @@ class OCRClient:
             dest = rename
 
         if os.path.exists(target/dest):
-            logger.warning("File already exists. Moving to REPEATED")
+            logger.warning(f"File already exists. Moving "
+                           f"{self.root_folder / filename}"
+                           f"to {self.root_folder / REPEATED_DIR / pathlib.Path(dest)}")
             try:
-                move(self.root_folder / filename, REPEATED_DIR / dest)
+                move(self.root_folder / filename, self.root_folder / REPEATED_DIR / pathlib.Path(dest))
             except Exception as e:
                 logger.error(repr(e))
                 pass
             return
 
-        move(self.root_folder / filename, target/dest)
+        move(self.root_folder / filename, target/pathlib.Path(dest))
 
     def __find_dir(self, name, path):
         for root, dirs, files in os.walk(path):
