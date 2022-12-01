@@ -126,4 +126,5 @@ class Application:
             progr = (self.ocr_client.sent_count*100)/self.ocr_client.total_count
             self.progress_count.set(progr)
             self.progress_message_lbl["text"] = f"{self.ocr_client.sent_count} de {self.ocr_client.total_count}"
+            self.widget3.master.update_idletasks()
             self.widget4.master.update_idletasks()

@@ -94,6 +94,7 @@ class OCRClient:
         with open(filepath, 'rb') as f:
             image: BytesIO = BytesIO(f.read())
             req = self.make_request(image)
+            print(f"Received response for {file}")
             if req.status_code != 200:
                 self.move_file(filename=pathlib.Path(file), target=MANUAL_DIR)
             else:
