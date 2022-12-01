@@ -68,7 +68,8 @@ class OCRClient:
         cnpjs = {
             "91360420000134": "OURO DO SUL",
             "01112137000109": "COOTAR_POA",
-            "83310441006239": "AURORA"
+            "83310441006239": "AURORA",
+            "02609254000137": "COOPAT_TAPES"
         }
         ano = "20" + str(ch_nfe[2:4])
         semestre = "PRIMEIRO" if int(ch_nfe[4:6]) < 7 else "SEGUNDO"
