@@ -53,7 +53,7 @@ class OCRClient:
             try:
                 move(self.root_folder / filename, REPEATED_DIR / dest)
             except Exception as e:
-                print(repr(e))
+                logger.error(repr(e))
                 pass
             return
 
