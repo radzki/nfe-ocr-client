@@ -95,23 +95,26 @@ class OCRClient:
         self.sent_count += 1
         logger.debug(f"Sending file {file}")
         filepath = self.root_folder / pathlib.Path(file)
-        with open(filepath, 'rb') as f:
-            image: BytesIO = BytesIO(f.read())
-            req = self.make_request(image)
-            logger.debug(f"Received response for {file}")
-            if req.status_code != 200:
-                self.move_file(filename=pathlib.Path(file), target=MANUAL_DIR)
+
+        f = open(filepath, 'rb')
+        image: BytesIO = BytesIO(f.read())
+        req = self.make_request(image)
+        f.close()
+
+        logger.debug(f"Received response for {file}")
+        if req.status_code != 200:
+            self.move_file(filename=pathlib.Path(file), target=MANUAL_DIR)
+        else:
+            ch_nfe = req.json()["nfe_number"]
+            numero_nf = str(ch_nfe[25:34]).lstrip("0")
+
+            target = self.find_target_dir(ch_nfe)
+
+            if target is None:
+                self.move_file(filename=pathlib.Path(file), target=MANUAL_DIR, rename=f"NF {numero_nf}.pdf")
             else:
-                ch_nfe = req.json()["nfe_number"]
-                numero_nf = str(ch_nfe[25:34]).lstrip("0")
-
-                target = self.find_target_dir(ch_nfe)
-
-                if target is None:
-                    self.move_file(filename=pathlib.Path(file), target=MANUAL_DIR, rename=f"NF {numero_nf}.pdf")
-                else:
-                    logger.debug(f"Found target dir: {target}")
-                    self.move_file(filename=pathlib.Path(file), target=target, rename=f"NF {numero_nf}.pdf")
+                logger.debug(f"Found target dir: {target}")
+                self.move_file(filename=pathlib.Path(file), target=target, rename=f"NF {numero_nf}.pdf")
 
         if self.total_count == self.sent_count:
             logger.info("########## Finished execution!! ##########")
