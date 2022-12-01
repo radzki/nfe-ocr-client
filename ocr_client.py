@@ -30,7 +30,7 @@ class OCRClient:
 
         self.root_folder = pathlib.Path(root_folder)
         self.dest_folder = pathlib.Path(dest_folder)
-        self.thread_pool = ThreadPool(os.cpu_count())
+        self.thread_pool = ThreadPool(os.cpu_count() if os.cpu_count() == 1 else os.cpu_count() - 1)
         self.sent_count = 0
         self.total_count = 0
         self.finished = False
