@@ -103,7 +103,7 @@ class OCRClient:
 
         logger.debug(f"Received response for {file}")
         if req.status_code != 200:
-            self.move_file(filename=pathlib.Path(file), target=MANUAL_DIR)
+            self.move_file(filename=pathlib.Path(file), target=self.root_folder / MANUAL_DIR)
         else:
             ch_nfe = req.json()["nfe_number"]
             numero_nf = str(ch_nfe[25:34]).lstrip("0")
@@ -111,7 +111,7 @@ class OCRClient:
             target = self.find_target_dir(ch_nfe)
 
             if target is None:
-                self.move_file(filename=pathlib.Path(file), target=MANUAL_DIR, rename=f"NF {numero_nf}.pdf")
+                self.move_file(filename=pathlib.Path(file), target=self.root_folder / MANUAL_DIR, rename=f"NF {numero_nf}.pdf")
             else:
                 logger.debug(f"Found target dir: {target}")
                 self.move_file(filename=pathlib.Path(file), target=target, rename=f"NF {numero_nf}.pdf")
