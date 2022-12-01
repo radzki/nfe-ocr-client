@@ -76,11 +76,11 @@ class OCRClient:
         cnpj = ch_nfe[6:20]
         numero_nf = str(ch_nfe[25:34]).lstrip("0")
 
-        partial_path = f"{self.dest_folder}/{cnpjs[cnpj]}/{ano}/{semestre}"
+        partial_path = pathlib.Path(self.dest_folder) / cnpjs[cnpj] / ano / semestre
 
         fname = f"NF {numero_nf}"
 
-        print(f"Searching dir: {partial_path}")
+        print(f"Searching dir: {str(partial_path)}")
         target = self.__find_dir(fname, partial_path)
         if target is None:
             return None
