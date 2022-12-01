@@ -30,7 +30,7 @@ class OCRClient:
 
         self.root_folder = pathlib.Path(root_folder)
         self.dest_folder = pathlib.Path(dest_folder)
-        self.thread_pool = ThreadPool(os.cpu_count() if os.cpu_count() == 1 else os.cpu_count() - 1)
+        self.thread_pool = ThreadPool(16)
         self.sent_count = 0
         self.total_count = 0
         self.finished = False
@@ -50,7 +50,7 @@ class OCRClient:
 
         if os.path.exists(target/dest):
             logger.warning(f"File already exists. Moving "
-                           f"{self.root_folder / filename}"
+                           f"{self.root_folder / filename} "
                            f"to {self.root_folder / REPEATED_DIR / pathlib.Path(dest)}")
             try:
                 move(self.root_folder / filename, self.root_folder / REPEATED_DIR / pathlib.Path(dest))
