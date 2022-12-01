@@ -133,6 +133,10 @@ class OCRClient:
             if e.errno != errno.EEXIST:
                 raise
 
+    def error_cb(self, e):
+        logger.error("Received error on Thread Pool")
+        logger.error(e)
+
     def run(self):
         self.sent_count = 0
         self.total_count = 0
@@ -145,5 +149,5 @@ class OCRClient:
             if str(f).endswith("pdf"):
                 files.append(f)
         self.total_count = len(files)
-        self.thread_pool.map_async(self.file_iterator, files)
+        self.thread_pool.map_async(self.file_iterator, files, error_callback=self.error_cb)
         return len(files)
