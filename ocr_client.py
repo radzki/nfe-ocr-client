@@ -1,11 +1,9 @@
 import errno
 import pathlib
 import requests
-#from pdf2image import convert_from_bytes
 import os
 from io import BytesIO
 from multiprocessing.pool import ThreadPool
-from shutil import move
 
 from loguru import logger
 
@@ -14,7 +12,6 @@ REPEATED_DIR = pathlib.Path("repetidas")
 
 #API_URL = "http://localhost:8080/v1/nfe_number"
 API_URL = "https://python-http-function-b26i67gfva-uk.a.run.app"
-#API_URL = "http://localhost:8080"
 
 
 logger.add("execution.log", rotation="1 MB")
@@ -53,10 +50,10 @@ class OCRClient:
 
         if os.path.isfile(target/dest):
             logger.warning("File already exists. Moving to REPEATED")
-            move(self.root_folder / filename, REPEATED_DIR / dest)
+            os.rename(self.root_folder / filename, REPEATED_DIR / dest)
             return
 
-        move(self.root_folder/filename, target/dest)
+        os.rename(self.root_folder/filename, target/dest)
 
     def __find_dir(self, name, path):
         for root, dirs, files in os.walk(path):
