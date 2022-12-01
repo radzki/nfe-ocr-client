@@ -6,13 +6,16 @@ import os
 from io import BytesIO
 from multiprocessing.pool import ThreadPool
 
-EXAMPLE_DIR = pathlib.Path("example_nfes")
-PROCESSED_DIR = pathlib.Path("processadas")
+from loguru import logger
+
 MANUAL_DIR = pathlib.Path("manual")
 
 #API_URL = "http://localhost:8080/v1/nfe_number"
 API_URL = "https://python-http-function-b26i67gfva-uk.a.run.app"
 #API_URL = "http://localhost:8080"
+
+
+logger.add("execution.log", rotation="1 MB")
 
 
 class OCRClient:
@@ -33,15 +36,6 @@ class OCRClient:
         self.total_count = 0
         self.finished = False
 
-    #def pdf_to_image(self, file) -> BytesIO:
-    #    print(f"Converting {file} to image...")
-    #    with open(EXAMPLE_DIR / pathlib.Path(file), 'rb') as f:
-    #        pages = convert_from_bytes(f.read())
-    #        buf = BytesIO()
-    #        pages[0].save(buf, format="png")
-    #        buf.seek(0)
-    #    return buf
-
     def make_request(self, image: BytesIO):
         files = {
             'file': ('nfe.png', image, 'application/octet-stream')
@@ -55,7 +49,7 @@ class OCRClient:
         else:
             dest = rename
 
-        os.rename(self.root_folder/filename, self.root_folder/target/dest)
+        os.rename(self.root_folder/filename, target/dest)
 
     def __find_dir(self, name, path):
         for root, dirs, files in os.walk(path):
@@ -80,7 +74,7 @@ class OCRClient:
 
         fname = f"NF {numero_nf}"
 
-        print(f"Searching dir: {str(partial_path)}")
+        logger.debug(f"Searching dir: {str(partial_path)}")
         target = self.__find_dir(fname, partial_path)
         if target is None:
             return None
@@ -88,14 +82,14 @@ class OCRClient:
         return pathlib.Path(target)
 
     def file_iterator(self, file):
-        print(f"Enviadas: {self.sent_count}/{self.total_count}")
+        logger.debug(f"Enviadas: {self.sent_count}/{self.total_count}")
         self.sent_count += 1
-        print(f"Sending file {file}")
+        logger.debug(f"Sending file {file}")
         filepath = self.root_folder / pathlib.Path(file)
         with open(filepath, 'rb') as f:
             image: BytesIO = BytesIO(f.read())
             req = self.make_request(image)
-            print(f"Received response for {file}")
+            logger.debug(f"Received response for {file}")
             if req.status_code != 200:
                 self.move_file(filename=pathlib.Path(file), target=MANUAL_DIR)
             else:
@@ -107,19 +101,13 @@ class OCRClient:
                 if target is None:
                     self.move_file(filename=pathlib.Path(file), target=MANUAL_DIR, rename=f"NF {numero_nf}.pdf")
                 else:
-                    print(f"Found target dir: {target}")
+                    logger.debug(f"Found target dir: {target}")
                     self.move_file(filename=pathlib.Path(file), target=target, rename=f"NF {numero_nf}.pdf")
 
         if self.total_count == self.sent_count:
             self.finished = True
 
     def __create_dirs(self):
-        try:
-            os.makedirs(self.root_folder/PROCESSED_DIR)
-        except OSError as e:
-            if e.errno != errno.EEXIST:
-                raise
-
         try:
             os.makedirs(self.root_folder/MANUAL_DIR)
         except OSError as e:
