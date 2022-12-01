@@ -80,6 +80,7 @@ class OCRClient:
 
         fname = f"NF {numero_nf}"
 
+        print(f"Searching dir: {partial_path}")
         target = self.__find_dir(fname, partial_path)
         if target is None:
             return None
