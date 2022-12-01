@@ -49,8 +49,12 @@ class OCRClient:
             dest = rename
 
         if os.path.exists(target/dest):
-            move(self.root_folder / filename, REPEATED_DIR / dest)
             logger.warning("File already exists. Moving to REPEATED")
+            try:
+                move(self.root_folder / filename, REPEATED_DIR / dest)
+            except Exception as e:
+                print(repr(e))
+                pass
             return
 
         move(self.root_folder / filename, target/dest)
