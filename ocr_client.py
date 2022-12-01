@@ -107,6 +107,7 @@ class OCRClient:
                 if target is None:
                     self.move_file(filename=pathlib.Path(file), target=MANUAL_DIR, rename=f"NF {numero_nf}.pdf")
                 else:
+                    print(f"Found target dir: {target}")
                     self.move_file(filename=pathlib.Path(file), target=target, rename=f"NF {numero_nf}.pdf")
 
         if self.total_count == self.sent_count:
