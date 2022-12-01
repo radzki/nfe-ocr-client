@@ -10,6 +10,7 @@ from shutil import move
 from loguru import logger
 
 MANUAL_DIR = pathlib.Path("manual")
+REPEATED_DIR = pathlib.Path("repetidas")
 
 #API_URL = "http://localhost:8080/v1/nfe_number"
 API_URL = "https://python-http-function-b26i67gfva-uk.a.run.app"
@@ -50,6 +51,11 @@ class OCRClient:
         else:
             dest = rename
 
+        if os.path.isfile(target/dest):
+            logger.warning("File already exists. Moving to REPEATED")
+            move(self.root_folder / filename, REPEATED_DIR / dest)
+            return
+
         move(self.root_folder/filename, target/dest)
 
     def __find_dir(self, name, path):
@@ -83,7 +89,7 @@ class OCRClient:
         return pathlib.Path(target)
 
     def file_iterator(self, file):
-        logger.debug(f"Enviadas: {self.sent_count}/{self.total_count}")
+        logger.info(f"Enviadas: {self.sent_count}/{self.total_count}")
         self.sent_count += 1
         logger.debug(f"Sending file {file}")
         filepath = self.root_folder / pathlib.Path(file)
@@ -111,6 +117,12 @@ class OCRClient:
     def __create_dirs(self):
         try:
             os.makedirs(self.root_folder/MANUAL_DIR)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
+
+        try:
+            os.makedirs(self.root_folder/REPEATED_DIR)
         except OSError as e:
             if e.errno != errno.EEXIST:
                 raise
