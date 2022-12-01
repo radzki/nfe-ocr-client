@@ -4,7 +4,7 @@ import requests
 import os
 from io import BytesIO
 from multiprocessing.pool import ThreadPool
-
+from shutil import move
 from loguru import logger
 
 MANUAL_DIR = pathlib.Path("manual")
@@ -48,12 +48,12 @@ class OCRClient:
         else:
             dest = rename
 
-        if os.path.isfile(target/dest):
-            os.rename(self.root_folder / filename, REPEATED_DIR / dest)
+        if os.path.exists(target/dest):
+            move(self.root_folder / filename, REPEATED_DIR / dest)
             logger.warning("File already exists. Moving to REPEATED")
             return
 
-        os.rename(self.root_folder/filename, target/dest)
+        move(self.root_folder / filename, target/dest)
 
     def __find_dir(self, name, path):
         for root, dirs, files in os.walk(path):
