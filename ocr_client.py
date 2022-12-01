@@ -10,8 +10,8 @@ EXAMPLE_DIR = pathlib.Path("example_nfes")
 PROCESSED_DIR = pathlib.Path("processadas")
 MANUAL_DIR = pathlib.Path("manual")
 
-API_URL = "http://localhost:8080/v1/nfe_number"
-#API_URL = "https://python-http-function-b26i67gfva-uk.a.run.app"
+#API_URL = "http://localhost:8080/v1/nfe_number"
+API_URL = "https://python-http-function-b26i67gfva-uk.a.run.app"
 #API_URL = "http://localhost:8080"
 
 
