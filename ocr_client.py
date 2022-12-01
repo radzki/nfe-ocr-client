@@ -5,6 +5,7 @@ import requests
 import os
 from io import BytesIO
 from multiprocessing.pool import ThreadPool
+from shutil import move
 
 from loguru import logger
 
@@ -49,7 +50,7 @@ class OCRClient:
         else:
             dest = rename
 
-        os.rename(self.root_folder/filename, target/dest)
+        move(self.root_folder/filename, target/dest)
 
     def __find_dir(self, name, path):
         for root, dirs, files in os.walk(path):
