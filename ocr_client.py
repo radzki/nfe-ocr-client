@@ -104,10 +104,11 @@ class OCRClient:
         req = self.make_request(image)
         f.close()
 
-        logger.debug(f"Received response for {file}")
         if req.status_code != 200:
+            logger.debug(f"Received ERROR response for {file}")
             self.move_file(filename=pathlib.Path(file), target=self.root_folder / MANUAL_DIR)
         else:
+            logger.debug(f"Received SUCCESS response for {file}")
             ch_nfe = req.json()["nfe_number"]
             numero_nf = str(ch_nfe[25:34]).lstrip("0")
 
