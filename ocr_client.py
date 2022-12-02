@@ -48,7 +48,7 @@ class OCRClient:
         else:
             dest = rename
 
-        if os.path.exists(target/dest):
+        if os.path.exists(target/pathlib.Path(dest)):
             logger.warning(f"File already exists. Moving "
                            f"{self.root_folder / filename} "
                            f"to {self.root_folder / REPEATED_DIR / pathlib.Path(dest)}")
@@ -82,9 +82,12 @@ class OCRClient:
 
         partial_path = pathlib.Path(self.dest_folder) / cnpjs[cnpj] / ano / semestre
 
+        logger.debug(f"Partial path: {partial_path}")
+
         fname = f"NF {numero_nf}"
 
         target = self.__find_dir(fname, partial_path)
+        logger.debug(f"Path target: {target}")
         if target is None:
             return None
 
